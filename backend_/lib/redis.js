@@ -3,6 +3,5 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const redis = new Redis(process.env.REDIS_API);
 
-await redis.set('foooooo','baaaaar');
+export const redis = new Redis(process.env.REDIS_API);

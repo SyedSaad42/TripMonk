@@ -1,0 +1,99 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  box-shadow: inset 0px 50px 50px -20px rgba(0, 0, 0, 0.7);
+
+}
+
+.navbar__brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar__logo {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border-radius: 20px;
+}
+.navbar__sub_logo {
+  width: 140px;
+  height: 70px;
+  margin-right: 10px;
+}
+.navbar__title {
+  font-family: "Just Me Again Down Here", cursive;
+  font-size: 30px;
+  color: #fff;
+}
+
+.navbar__nav {
+  display: flex;
+  gap: 40px;
+  margin-top: -35px;
+}
+
+.navbar__link {
+  font-family: "Arial", sans-serif;
+  font-size: 20px;
+  color: #fff;
+  font-size: small;
+}
+
+.navbar__auth {
+  display: flex;
+  gap: 10px;
+}
+
+.navbar__button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+}
+
+.navbar__button--login {
+  background-color: #f18a53;
+  margin-top: -35px;
+}
+
+.navbar__button--register {
+  background-color: #f5efe6;
+  margin-top: -35px;
+}
+
+@media (max-width: 991px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar__nav {
+    margin-top: 10px;
+  }
+
+  .navbar__auth {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar__nav {
+    display: none;
+  }
+
+  .navbar__auth {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .navbar__button {
+    width: 100%;
+  }
+}
