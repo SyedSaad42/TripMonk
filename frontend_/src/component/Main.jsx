@@ -10,7 +10,7 @@ const Text = () =>{
                 <span>Experience</span>
             </div>
             <div style={{marginTop: "10px" ,display: 'flex', flexDirection: 'column', fontFamily: '"Arial", sans-serif', fontSize: '18px', color: '#FFFFFF', width: 'fit-content', }}>
-                <p>For Your Journey Hassle-Free With Our Easy Online Booking. <br /><span style={{color:'#f18a53'}}>Start your journey today!</span></p>
+                <p>Experience limitless travel possibilities with TripMonk booking platform <br /><span style={{color:'#f18a53'}}>Start your journey today!</span></p>
             </div>
 
            

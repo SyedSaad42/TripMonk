@@ -1,26 +1,27 @@
-
-import Navbar from "./component/Navbar";
-import "./App.css";
-import SearchSection from "./component/searchsection";
-import Text from "./component/Main";
-import Footer from "./component/Footer";
-import ChatBot from "./component/Chatbot";
+import { Navigate, Route, Routes } from "react-router-dom";
+import SignUpPage from "./pages/SignupPage";
+import HomePage from "./pages/Homepage";
 
 function App() {
 
   return (
     <>
-        <Navbar />
-        <div style={{display: 'flex',gap: '270px'}}>
-          <div style={{marginLeft: '30px', marginTop: '50px'}}>
-        <Text />
-        </div>
-         <SearchSection />
-         </div>
-        
-           <Footer />
-        
-         <ChatBot />
+          
+
+<Routes>
+  {/* Home Page Route */}
+  <Route
+    path="/"
+    element={
+      <>
+     <HomePage />
+      </>
+    }
+  />
+
+  {/* SignUp Page Route */}
+  <Route path="/signup" element={<SignUpPage />} />
+</Routes>
     </>
   );
 }
