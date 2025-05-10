@@ -7,7 +7,7 @@ import ChatBot from "../component/Chatbot"
 const HomePage = ()=>{
 
     return (
-        <div>
+        <div className="Homepagebody">
         <Navbar />
         <div style={{ display: 'flex', gap: '270px' }}>
           <div style={{ marginLeft: '30px', marginTop: '50px' }}>

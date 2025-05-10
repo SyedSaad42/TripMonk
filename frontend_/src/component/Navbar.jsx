@@ -1,13 +1,14 @@
 import React from "react";
 import "../styles/Navbar.css";
+import { useNavigate} from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <div className="navbar">
       <div className="navbar__brand">
-        <img src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1745596936/jsqk0f0fmhhu9oi4yuzb.png" alt="Logo" className="navbar__logo" />
+        <img src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1746883200/pj9ndyi579jrvvcixe7z.png" alt="Logo" className="navbar__logo" />
         <span className="navbar__title">Trip MOnk</span>
-        <img src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1745596934/la4qvrw4mtmu81binksm.png" alt="Logo" className="navbar__sub_logo" />
       </div>
 
       <div className="navbar__nav">
@@ -19,8 +20,8 @@ const Navbar = () => {
       </div>
 
       <div className="navbar__auth">
-        <div className="navbar__button navbar__button--login">Login</div>
-        <div className="navbar__button navbar__button--register">Register</div>
+        <div className="navbar__button navbar__button--login" onClick={()=>{ navigate("/login")}}>Login</div>
+        <div className="navbar__button navbar__button--register" onClick={() => navigate("/signup")}>Register</div>
       </div>
     </div>
   );
