@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import axios from "../lib/axios.js";
-import {toast} from "react-hot-toast";
+import {toast, ToastBar} from "react-hot-toast";
 
 const useUserStore = create((set,get) => ({
  user: null,
@@ -10,7 +10,7 @@ const useUserStore = create((set,get) => ({
     set({ loading: true });
 
     if (password !== confirmPassword) {
-        console.log("this is working ")
+        
         set({ loading: false });
         return toast.error("Passwords do not match");
     }
@@ -23,6 +23,28 @@ const useUserStore = create((set,get) => ({
         toast.error(error.response.data.message || "An error occurred");
     }
 },
+login: async ({email,password}) =>{
+set({loading: true})
+
+try {
+    const res = await axios.post("/auth/login",{email,password});
+    set({user: res.data, loading: false});
+    toast.success("You are Logged In !");
+} catch (error) {
+    set({loading: false});
+    toast.error(error.response.data.message||"An error Occured");
+}
+},
+logout: async () =>{
+   try {
+    await axios.post("/auth/logout");
+    set({user:null})
+    
+   } catch (error) {
+    set({loading:false})
+     toast.error(error.response.data.message||"An error Occured during logout");
+   }
+},
 checkAuth: async () => {
     set({ checkingAuth: true });
     try {
@@ -33,7 +55,20 @@ checkAuth: async () => {
         set({ checkingAuth: false, user: null });
     }
 },
+refreshToken: async () => {
+		// Prevent multiple simultaneous refresh attempts
+		if (get().checkingAuth) return;
 
+		set({ checkingAuth: true });
+		try {
+			const response = await axios.post("/auth/refresh-token");
+			set({ checkingAuth: false });
+			return response.data;
+		} catch (error) {
+			set({ user: null, checkingAuth: false });
+			throw error;
+		}
+	},
 
 }));
 export default useUserStore;

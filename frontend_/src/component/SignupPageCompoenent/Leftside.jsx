@@ -7,6 +7,7 @@ import Typography from '@mui/joy/Typography';
 import Key from '@mui/icons-material/Key';
 import { Link } from "react-router-dom";
 import  useUserStore from "../../stores/useUserStore"
+
 const LeftSidePage = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -15,7 +16,6 @@ const LeftSidePage = () => {
     confirmPassword: "",
   });
 
-  //  const [Loading, setLoading] = useState();
    const {signup,loading} = useUserStore();
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +28,7 @@ const LeftSidePage = () => {
   };
   const minLength = 12;
   return (
-    <div style={{ padding: "40px", maxWidth: "400px", margin: "0 auto" }}>
+    <div style={{ padding: "40px", maxWidth: "400px", }}>
 
      
       <motion.div
@@ -134,7 +134,7 @@ const LeftSidePage = () => {
         ): (
           <>
           
-               <UserPlus aria-hidden="true" />Sign Up
+               <UserPlus aria-hidden="true" /><p style={{marginLeft: "8px"}}>Sign Up</p>
                </>
         )}
          
