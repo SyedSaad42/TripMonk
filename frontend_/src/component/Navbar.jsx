@@ -7,7 +7,7 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <div className="navbar__brand">
-        <img src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1746883200/pj9ndyi579jrvvcixe7z.png" alt="Logo" className="navbar__logo" />
+        <img src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1746883200/pj9ndyi579jrvvcixe7z.png" onClick={()=>{navigate("/")}} alt="Logo" className="navbar__logo" />
         <span className="navbar__title">Trip MOnk</span>
       </div>
 

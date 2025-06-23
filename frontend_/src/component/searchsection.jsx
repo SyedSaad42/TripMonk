@@ -1,17 +1,36 @@
 import React from "react";
 import { useState } from "react";
 import Button  from "@mui/material/Button"
+import Input from '@mui/material/Input';
 import Divider from '@mui/material/Divider';
 import Card from '@mui/material/Card';
-import Input from '@mui/material/Input';
-
+import { useNavigate } from "react-router-dom";
+import { SearchContext } from "../context/SearchContext.jsx";
+import { useContext } from "react";
 const SearchSection = ()=>{
-    const today = new Date().toISOString().slice(0,10);
-    const [depature,setDepature] = useState('');
-    const [arrival, setArrival] =useState('');
-    const [depature_date, setDepature_date] =useState(today);
-    const [arrival_date, setArrival_date] =useState(today);
-    const [people, setPeople] =useState(0);
+  
+  const {
+    depature,
+    setDepature,
+    arrival,
+    setArrival,
+    depature_date,
+    setDepature_date,
+    arrival_date,
+    setArrival_date,
+    people,
+    setPeople,
+    today
+  } = useContext(SearchContext);
+
+   
+    const navigate =  useNavigate();
+  const handleSubmit = () =>{
+    navigate("/search");
+   
+    
+  }
+
    
 return(
   
@@ -49,7 +68,7 @@ return(
     </div><br />
     </div>
     <div style={{display:"flex", justifyContent: "center", marginTop: "18px"}}>
-     <Button type="submit" style={{ background: "#f18a53", color:"black", borderRadius: "20px", paddingLeft: "20px", paddingRight: "20px" }}>Search packages</Button>
+     <Button type="submit" style={{ background: "#f18a53", color:"black", borderRadius: "20px", paddingLeft: "20px", paddingRight: "20px" }} onClick={(e)=>{handleSubmit()}}>Search packages</Button>
      </div>
      </div>
      </Card>
