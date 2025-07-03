@@ -18,7 +18,7 @@ const TopSection = () => {
     people,
     setPeople
   } = useContext(SearchContext);
-  console.log(depature,arrival);
+ 
 
 
   return (

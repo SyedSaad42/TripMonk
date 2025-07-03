@@ -1,40 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { label } from 'framer-motion/client';
 import AirplanemodeActiveOutlinedIcon from '@mui/icons-material/AirplanemodeActiveOutlined';
-import { flex } from '@mui/system';
 import { useContext } from 'react';
 import { SearchContext } from '../../context/SearchContext'; 
+import { FlightContext } from '../../context/FlightContext';
+import { useNavigate } from 'react-router-dom';
 const MidSection = () => {
  
+  const navigate = useNavigate();
     //extarctign values fromt he searchsection // one way
-      const { depature, arrival, depature_date } = useContext(SearchContext);
+      const { depature, arrival, depature_date, return_date } = useContext(SearchContext);
     //declaring the array that will store the fetch flights
-    const [flights,setFlights] = useState([]);
+    const {flights, setFlights} = useContext(FlightContext);
  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-
+const {selectedFlight,setSelectedFlights} = useContext(FlightContext);
     // now search the flight
     useEffect(()=>{
-      if(depature && arrival && depature_date){
+      if(depature && arrival && depature_date && return_date){
         const fetchflight =  async () =>{
       setLoading(true);
       setError(null);
       try {
-      //  const response = await fetch(`http://localhost:4000/flight/search?departure=${encodeURIComponent(depature)}&arrival=${encodeURIComponent(arrival)}&flight_date=${depature_date}`)
-      const response = await fetch("http://localhost:4000/flights");
-        if(!response.ok) throw new Error("Failed to fetch flights");
-      // store the flight
+    //  const response = await fetch(`http://localhost:4000/flight/search?departure=${encodeURIComponent(depature)}&arrival=${encodeURIComponent(arrival)}&flight_date=${depature_date}`)
+      const response = await fetch(
+  `http://localhost:4000/flight/search?departure=${encodeURIComponent(depature)}&arrival=${encodeURIComponent(arrival)}&flight_date=${depature_date}&return_date=${return_date}`
+);
 
+        if(!response.ok) throw new Error("Failed to fetch flights");
       const data = await response.json();
-      setFlights(data.flights);
-           console.log(data.flights);
+        // store the flight
+ const mappedFlights = data.flights.map(f => ({
+          departure: {
+            airport: f.departure_airport?.name || "Unknown",
+            scheduled: f.departure_airport?.time || "TBD"
+          },
+          arrival: {
+            airport: f.arrival_airport?.name || "Unknown",
+            scheduled: f.arrival_airport?.time || "TBD"
+          },
+          airline: {
+            name: f.airline || "Airline"
+          },
+          flight: {
+            number: f.flight_number || "N/A"
+          },
+          price: Math.floor(Math.random() * 300) + 200  // 🧪 dummy price for now
+        }));
+
+     
+      setFlights(mappedFlights);
+           
       } catch (error) {
         setError(error.message);
       }finally{
@@ -45,9 +64,12 @@ const MidSection = () => {
         fetchflight();
       }
 
-    },[depature,arrival,depature_date])
+    },[depature,arrival,depature_date,return_date])
 
-
+const handleSubmit = (flight) =>{
+  setSelectedFlights(flight);
+  navigate("/tripcart");
+}
 
 return (
   <div>
@@ -90,9 +112,9 @@ return (
               {/* LEFT SECTION */}
               <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                 <Typography variant="subtitle1">
-                  {flight.departure?.scheduled.slice(11, 19)} -------{" "}
+                  {flight.departure?.scheduled.slice(11, 16)} -------{" "}
                   <AirplanemodeActiveOutlinedIcon style={{ transform: "rotate(90deg)" }} /> -------{" "}
-                  {flight.arrival?.scheduled.slice(11, 19)}
+                  {flight.arrival?.scheduled.slice(11, 16)}
                 </Typography>
                 <Typography variant="body2">
                   {flight.departure?.airport || "Unknown"} - {flight.arrival?.airport || "Unknown"}
@@ -107,7 +129,7 @@ return (
                 <Typography variant="h6" style={{ fontWeight: 600 }}>
                   ${flight.price || 350}
                 </Typography>
-                <Button style={{ color: "black", backgroundColor: "#f18a53" }}>Book Now</Button>
+                <Button onClick={()=>{handleSubmit(flight)}} style={{ color: "black", backgroundColor: "#f18a53" }}>Book Now</Button>
               </div>
             </div>
           </CardContent>

@@ -8,7 +8,7 @@ export const SearchProvider = ({ children }) => {
   const [depature, setDepature] = useState("");
   const [arrival, setArrival] = useState("");
   const [depature_date, setDepature_date] = useState(today);
-  const [arrival_date, setArrival_date] = useState(today);
+  const [return_date, setReturn_date] = useState(today);
   const [people, setPeople] = useState(0);
 
   return (
@@ -19,9 +19,9 @@ export const SearchProvider = ({ children }) => {
         arrival,
         setArrival,
         depature_date,
+        return_date,
+        setReturn_date,
         setDepature_date,
-        arrival_date,
-        setArrival_date,
         people,
         setPeople,
         today,
