@@ -1,5 +1,8 @@
-import React, { useContext, useEffect , useState} from 'react';
-import { FlightContext } from '../../context/FlightContext';
+
+
+// export default LeftSection;
+import React, { useContext, useEffect, useState } from 'react';
+import { TripCartContext } from '../../context/TripCartContext';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -9,222 +12,166 @@ import Divider from '@mui/material/Divider';
 import ClearIcon from '@mui/icons-material/Clear';
 import PaidSharpIcon from '@mui/icons-material/PaidSharp';
 import { useNavigate } from 'react-router-dom';
+import AirlineSeatReclineExtraIcon from '@mui/icons-material/AirlineSeatReclineExtra';
+
 const LeftSection = () => {
-  const { selectedFlight } = useContext(FlightContext);
-  const flightPrice = 350;
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [travelTime, setTravelTime] = useState(0);
+  const { tripItems, addToTripCart, clearTripCart } = useContext(TripCartContext);
+  const selectedFlight = tripItems.departure;
+  const selectedReturn = tripItems.return;
+  const selectedHotel = tripItems.hotel;
 
-    const navigate = useNavigate();
-  // Handle loading state
-  useEffect (()=>{
-    if (selectedFlight?.departure?.scheduled && selectedFlight?.arrival?.scheduled) {
-    const departureTime = new Date(selectedFlight.departure.scheduled);
-    const arrivalTime = new Date(selectedFlight.arrival.scheduled);
+  const flightPrice = selectedFlight?.price || 350;
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [travelTime, setTravelTime] = useState('0h 0m');
+  const [duration, setDuration] = useState(0);
+  const navigate = useNavigate();
 
-    const durationMs = arrivalTime - departureTime;
+  useEffect(() => {
+    if (
+      selectedFlight?.departure_airport?.time &&
+      selectedFlight?.arrival_airport?.time
+    ) {
+      const departureTime = new Date(selectedFlight.departure_airport.time);
+      const arrivalTime = new Date(selectedFlight.arrival_airport.time);
+      const durationMs = arrivalTime - departureTime;
+      const hours = Math.floor(durationMs / (1000 * 60 * 60));
+      const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+      setTravelTime(`${hours}h ${minutes}m`);
+    } else if (selectedFlight?.duration) {
+      const min = Number(selectedFlight.duration);
+      const hours = Math.floor(min / 60);
+      const mins = min % 60;
+      setTravelTime(`${hours}h ${mins}m`);
+    }
 
-    const hours = Math.floor(durationMs / (1000 * 60 * 60));
-    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+    setDuration(selectedFlight?.duration || 0);
+    const calculateTotal = (Price) => Price + (Price * 13) / 100;
+    const result = calculateTotal(flightPrice);
+    setTotalPrice(result);
+ console.log("yo the component is visible");
+ console.log("the item tray",tripItems );
+  }, [flightPrice, selectedFlight]);
 
-    setTravelTime(`${hours}h ${minutes}m`);
-  }
+  const convertTo12Hour = (time24) => {
+    if (typeof time24 !== 'string' || !time24.includes(':')) return 'TBD';
+    const [hourStr, minute] = time24.split(':');
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${ampm}`;
+  };
 
-
-
-    const calculateTotal =((Price)=>{
-const totalPrice = Price + ((Price*13)/100);
-return totalPrice;
-})
-const result = calculateTotal(flightPrice);
-setTotalPrice(result);
-
-    
-  },[flightPrice,selectedFlight])
-
+  const formatDuration = (minutes) => {
+    const min = parseInt(minutes, 10);
+    const hours = Math.floor(min / 60);
+    const remainingMinutes = min % 60;
+    return `${hours}h ${remainingMinutes}m`;
+  };
 
   return (
-    <div> 
-      {/* trip info */}
-      <div style={{fontFamily: "parkinsans", fontSize: "12px", marginLeft: "35px"}}> 
-        <p>
-          {selectedFlight.airline?.name || "N/A"}.{"  "}
-          {selectedFlight.departure?.iata || "N/A"}
-          <ArrowForwardIcon  style={{height: "2vh"}}/>
-          {selectedFlight.arrival?.iata || "N/A"}
-        </p>
-      </div>
+    <div style={{ fontFamily: 'parkinsans', paddingBottom: '40px' }}>
+      {/* DEPARTURE CARD */}
+      {selectedFlight && (
+        <Card style={styles.card}>
+          <CardContent>
+            <Typography variant="h6" style={styles.title}>Departure Flight</Typography>
+            <Typography variant="body2">
+              {selectedFlight?.airline || 'N/A'} - {selectedFlight?.flight_number || 'N/A'}
+            </Typography>
+            <Typography variant="body2">
+              {selectedFlight?.departure_airport?.id || 'N/A'}
+              <ArrowForwardIcon style={{ verticalAlign: 'middle' }} />
+              {selectedFlight?.arrival_airport?.id || 'N/A'}
+            </Typography>
+            <Typography variant="body2">
+              {convertTo12Hour(selectedFlight?.departure_airport?.time?.slice(11, 16))} -{' '}
+              {convertTo12Hour(selectedFlight?.arrival_airport?.time?.slice(11, 16))} (
+              {formatDuration(duration)})
+            </Typography>
+            <img
+              src={selectedFlight?.airline_logo}
+              alt={selectedFlight?.airline || 'Airline'}
+              style={{ height: '24px', marginTop: '10px' }}
+            />
+          </CardContent>
+        </Card>
+      )}
 
-      <div style={{display:"flex", flexDirection:"row", gap:"20px"}} > 
-      <div style={{display:"flex", flexDirection:"column"}}> 
-          <div style={{display:"flex", flexDirection:"row", gap:"30px"}}>
-              {/* LEFT SECTION */}
+      {/* RETURN CARD */}
+      {selectedReturn && (
+        <Card style={styles.card}>
+          <CardContent>
+            <Typography variant="h6" style={styles.title}>Return Flight</Typography>
+            <Typography variant="body2">
+              {selectedReturn?.airline || 'N/A'} - {selectedReturn?.flight_number || 'N/A'}
+            </Typography>
+            <Typography variant="body2">
+               {selectedReturn?.arrival_airport?.id || 'N/A'}
+                <ArrowForwardIcon style={{ verticalAlign: 'middle' }} />
+              {selectedReturn?.departure_airport?.id || 'N/A'}
+             
+             
+            </Typography>
+            <Typography variant="body2">
+              {convertTo12Hour(selectedReturn?.departure_airport?.time?.slice(11, 16))} -{' '}
+              {convertTo12Hour(selectedReturn?.arrival_airport?.time?.slice(11, 16))} (
+              {formatDuration(selectedReturn?.duration)})
+            </Typography>
+            <img
+              src={selectedReturn?.airline_logo}
+              alt={selectedReturn?.airline || 'Airline'}
+              style={{ height: '24px', marginTop: '10px' }}
+            />
+          </CardContent>
+        </Card>
+      )}
 
-        <Card
-        
-          style={{ width: "135vh", height: "23vh", marginBottom: "10px" , marginLeft: "20px", borderRadius:"20px"}}
+      {/* HOTEL CARD */}
+      {selectedHotel && (
+        <Card style={styles.card}>
+          <CardContent>
+            <Typography variant="h6" style={styles.title}>Hotel</Typography>
+            <Typography variant="body2">{selectedHotel?.name || 'Hotel Name'}</Typography>
+            <Typography variant="body2">{selectedHotel?.hotel_class || 'Hotel Class'}</Typography>
+            <Typography variant="body2">
+              Price/Night: ${selectedHotel?.rate_per_night?.extracted_lowest || 'N/A'}
+            </Typography>
+            <Typography variant="body2">{selectedHotel?.description || 'N/A'}</Typography>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* CLEAR CART BUTTON */}
+      <div style={{ marginTop: '20px', marginLeft: '10px' }}>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={clearTripCart}
+          startIcon={<ClearIcon />}
         >
-          <CardContent>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                width: "100%",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                <Typography variant="body2" style={{fontWeight: "bold", fontSize: "15px", fontFamily: "parkinsans"}}>
-                  {selectedFlight.departure?.airport || "Unknown"} {"to"} {selectedFlight.arrival?.airport || "Unknown"}
-                </Typography>
-                <Typography variant="subtitle1">
-                  {selectedFlight.departure?.scheduled.slice(11, 16)} {" - "}
-                
-                  {selectedFlight.arrival?.scheduled.slice(11, 16)}
-
-                  
-                </Typography>
-                
-                <Typography variant="body2">
-                {selectedFlight.airline?.name || "Airline"} . {selectedFlight.departure?.scheduled.slice(0,9)}
-                </Typography>
-
-              </div>
-               </div>
-                 <div style={{display:"flex",flexDirection:"row",justifyContent:"end"}}>
-                  <Button onClick={()=>navigate("/search")}>Change Flight</Button>
-                </div>
-           
-          </CardContent>
-        </Card>
-        </div>
-        
-              {/* TripDetail */}
-      <div>
-        <Card style={{borderRadius:"20px",width: "135vh",marginLeft:"20px", backgroundColor: 'rgba(255, 255, 255, 0.9)',  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',backdropFilter: 'blur(2px)'}}>
-          <CardContent>
-            <div>
-              <p style={{fontFamily:"parkinsans"}}>Trip Detail</p>
-             <Divider />
-             <Card style={{borderRadius:"20px", marginTop:"16px", width:"110vh"}}>
-              <CardContent>
-                <div style={{fontSize:"12px", fontFamily:"parkinsans", display:"flex", flexDirection:"row"}}>
-                <p>{selectedFlight.airline?.name || "N/A"}.{"    "}</p> 
-              <p style={{fontSize:"9px", fontFamily:"parkinsans", color:"grey"}}>{selectedFlight.flight?.number ||  "N/A"}</p>
-             </div>
-             <div>
-              {/* //depature section */}
-           <div  style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
-
-            <div style={{display:"flex", flexDirection:"column", fontFamily:"parkinsans", fontSize:"11px"}}>
-            <p style={{fontSize:"20px", fontWeight:"bold", fontFamily:"parkinsans"}}>{selectedFlight.departure?.airport || "Unknown"} </p>
-            <div style={{fontFamily:"parkinsans",fontSize:"12px", color:"grey",marginTop:"-20px"}}>
-            <p>Terminal: {selectedFlight.departure?.terminal||"n/a"}{"  "}"{selectedFlight.departure?.iata || "N/A"}"</p>
-            <p>Gate Number: {selectedFlight.departure?.gate||"n.a"}</p>
-            </div>
-            </div>
-
-            <div style={{display:"flex", flexDirection:"column", fontSize:"11px", fontFamily: "sans-serif"}}>
-              <p style={{fontSize:"20px", fontWeight:"bold", fontFamily:"parkinsans"}}>{selectedFlight.departure?.scheduled.slice(11, 16)} </p>
-                  <div style={{fontFamily:"parkinsans",fontSize:"12px", color:"grey",marginTop:"-20px"}}>
-              <p> {selectedFlight.departure?.timezone || "na"}</p>
-              <p> {selectedFlight.departure?.scheduled.slice(0, 9)} </p>
-              </div>
-            </div>
-          </div>   
-           {/* //travel time */}
-         <div style={{fontFamily:"parkinsans",fontSize:"16px", color:"grey"}}>
-            <p>Travel Time: {travelTime} </p>
-          </div>   
-          {/* //arrival */}   
-                     <div  style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
-
-            <div style={{display:"flex", flexDirection:"column", fontFamily:"parkinsans", fontSize:"11px"}}>
-            <p style={{fontSize:"20px", fontWeight:"bold", fontFamily:"parkinsans"}}>{selectedFlight.arrival?.airport || "Unknown"} </p>
-            <div style={{fontFamily:"parkinsans",fontSize:"12px", color:"grey",marginTop:"-20px"}}>
-            <p>Terminal: {selectedFlight.arrival?.terminal||"N/A"}{"  "}"{selectedFlight.arrival?.iata || "N/A"}"</p>
-            <p>Gate Number: {selectedFlight.arrival?.gate||"N.A"}</p>
-            </div>
-            </div>
-
-            <div style={{display:"flex", flexDirection:"column", fontSize:"11px", fontFamily: "sans-serif"}}>
-              <p style={{fontSize:"20px", fontWeight:"bold", fontFamily:"parkinsans"}}>{selectedFlight.arrival?.scheduled.slice(11, 16)} </p>
-                  <div style={{fontFamily:"parkinsans",fontSize:"12px", color:"grey",marginTop:"-20px"}}>
-              <p> {selectedFlight.arrival?.timezone || "na"}</p>
-              <p> {selectedFlight.arrival?.scheduled.slice(0, 9)} </p>
-              </div>
-            </div>
-          </div>   
-
-          <div>
-
-            </div>   
-           </div>
-              </CardContent>
-             </Card>
-            </div>
-          <div style={{marginLeft:"20px"}}>
-        <p style={{fontFamily:"parkinsans",fontSize:"20px", fontWeight:"bold"}}>Your Fare: Basic</p>
-        <div style={{fontFamily:"parkinsans",fontSize:"13px"}}>
-        <p><PaidSharpIcon style={{height:"3vh"}}/>seat choise for free</p>
-        <p><ClearIcon style={{height:"3vh"}}/>Carry-on bag not allowed</p>
-        <p><PaidSharpIcon style={{height:"3vh"}}/>1st checked bag for a fee: CA $65</p>
-        <p><ClearIcon style={{height:"3vh"}}/>Non-refundable</p>
-        <p><ClearIcon style={{height:"3vh"}}/>Changes not allowed</p>
-        </div>
+          Clear Trip Cart
+        </Button>
       </div>
-          </CardContent>
-        </Card>
- 
-      </div>
-      </div>
-      {/* Price summary */}
-      <div>
-       
-       <Card style={{height:"60vh" , width:"80vh", borderRadius:"20px"}}>
-      <CardContent>
-        <div>
-
-            <p style={{fontFamily:"parkinsans", fontWeight:"bold"}}>Price summary </p>
-            <div  style={{display:"flex", flexDirection:"row", gap: "190px"}}>
-
-            <div style={{display:"flex", flexDirection:"column", fontFamily:"parkinsans", fontSize:"11px"}}>
-            <p>Traveller :Adults</p>
-            <p>Air transportation charges</p>
-            <p>Taxes, fees, and charges</p>
-            </div>
-
-            <div style={{display:"flex", flexDirection:"column", fontSize:"11px", fontFamily: "sans-serif"}}>
-              <p style={{fontWeight: "bold"}}> CA ${totalPrice}</p>
-              <p> CA ${flightPrice}</p>
-              <p> CA ${((flightPrice*13)/100)}</p>
-            </div>
-          </div>
-          <Divider />
-      <div>
-        <div style={{display:"flex",flexDirection:"row", justifyContent:"space-between"}}>
-        <p style={{fontFamily:"parkinsans", fontWeight:"bold", fontSize:"22px"}}>Trip Total</p>
-        <p style={{fontWeight:"bold", fontFamily:"sans-serif"}}>CA ${totalPrice}</p>
-        </div>
-        <p style={{fontFamily:"parkinsans",color:'grey', fontWeight:"bold", fontSize:"10px", marginTop: "-20px"}}>Rates are quoated in Canadian dollars</p>
-      </div>
-        <div style={{display:"flex" , flexDirection:"row", justifyContent:"center", marginTop: "19px"}}>
-            <Button style={{borderRadius:"12px", color: "black", backgroundColor: "#f18a53", paddingLeft:"62px" ,paddingRight:"62px" }}>Check out</Button>
-          </div> 
-       
-        </div>
-      
-      </CardContent>
-       </Card>
-        </div>
-      
-  </div>
-
     </div>
-    
-
   );
+};
+
+const styles = {
+  card: {
+    width: '85%',
+    margin: '20px auto',
+    padding: '15px',
+    borderRadius: '20px',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+  },
+  title: {
+    fontFamily: 'parkinsans',
+    fontSize: '20px',
+    fontWeight: 'bold',
+    color: '#130c45',
+    marginBottom: '10px'
+  }
 };
 
 export default LeftSection;

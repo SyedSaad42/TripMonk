@@ -3,12 +3,12 @@ import { Button, FormControl, TextField } from "@mui/material";
 import { motion } from "framer-motion";
 import { Loader, User, UserPlus } from "lucide-react";
 import { useRef,useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useUserStore from "../../stores/useUserStore";
 
 
 const RightSide = ()=>{
-    
+    const Navigate = useNavigate();
    const[email,setEmail] = useState("");
    const[password,setPassword] =  useState("");
 
@@ -18,6 +18,7 @@ const RightSide = ()=>{
        e.preventDefault();
       login({email,password});
       console.log({email, password},"Successfully login");
+      Navigate("/");
     }
      return(
         //wrapper class

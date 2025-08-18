@@ -1,79 +1,40 @@
-// import React from "react";
-// import { Button } from "@mui/material";
-// const ChatBot = () =>{
-//     return(
-//         <div style={{display: 'flex' ,flexDirection:'row',justifyContent: 'flex-end'}}> 
-//         <div style={{marginTop: '20px'}} >
-           
-//             <Button style={{borderRadius: '27px', color: '#FFFFFF', paddingTop: '2px',
-//                 paddingBottom: '2px', paddingLeft: '7px', paddingRight: '7px', backgroundColor: '#f18a53', 
-//                 fontWeight: 'bold'}}><p style={{fontSize: '16px'}}>Chat</p><img src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1746048736/aiicon.png" style={{height: '2vh'}}></img></Button>
-        
-       
-//         </div>
-//         <img src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1746049614/monk.png" style={{height: '20vh', marginTop: '-50px'}}>
-//         </img></div>
-//     )
-// }
-
-// export default ChatBot;
-
-
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import ChatInterface from "./ChatInterface";
+import ChatbotIframe from "./ChatBotIframe.jsx" // Your iframe
 
 const ChatBot = () => {
-    const [chatOpen, setChatOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
-    const handleChatOpen = () => {
-        setChatOpen(true);
-    };
+    const userName = "Syed"; // from user context or login
+  const tripId = "Trip_456";
 
-    const handleChatClose = () => {
-        setChatOpen(false);
-    };
+  const handleChatOpen = () => setChatOpen((prev) => !prev);
 
-    return (
-        <>
-            <div style={{display: 'flex', flexDirection:'row', justifyContent: 'flex-end'}}> 
-                <div style={{marginTop: '20px'}} >
-                    <Button 
-                        onClick={handleChatOpen}
-                        style={{
-                            borderRadius: '27px', 
-                            color: '#FFFFFF', 
-                            paddingTop: '2px',
-                            paddingBottom: '2px', 
-                            paddingLeft: '7px', 
-                            paddingRight: '7px', 
-                            backgroundColor: '#f18a53', 
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        <p style={{fontSize: '16px', margin: 0}}>Chat</p>
-                        <img 
-                            src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1746048736/aiicon.png" 
-                            style={{height: '2vh', marginLeft: '5px'}} 
-                            alt="AI Icon"
-                        />
-                    </Button>
-                </div>
-                <img 
-                    src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1746049614/monk.png" 
-                    style={{height: '20vh', marginTop: '-50px'}}
-                    alt="Monk"
-                />
-            </div>
-            
-            {/* Chat Interface Dialog - Communicates with separate Chat Service */}
-            <ChatInterface 
-                open={chatOpen} 
-                onClose={handleChatClose}
-                chatServiceUrl="http://localhost:3001" // Your separate chat service
-            />
-        </>
-    );
+  return (
+    <>
+      <div style={{ position: "fixed", bottom: "40px", right: "40px", zIndex: 1000 }}>
+        <Button
+          onClick={handleChatOpen}
+          style={{
+            borderRadius: "50%",
+            padding: "12px 16px",
+            backgroundColor: "#f18a53",
+            color: "#fff",
+            fontWeight: "bold",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+          }}
+        >
+          <img
+            src="https://res.cloudinary.com/dctdi6x4e/image/upload/v1746048736/aiicon.png"
+            alt="Chat"
+            style={{ height: "30px" }}
+          />
+        </Button>
+      </div>
+
+      {chatOpen && <ChatbotIframe />}
+    </>
+  );
 };
 
 export default ChatBot;

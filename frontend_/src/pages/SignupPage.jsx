@@ -1,4 +1,5 @@
 
+import BaseFooter from "../component/BaseFooter";
 import LeftSidePage from "../component/SignupPageCompoenent/Leftside"
 import NavbarSignup from "../component/SignupPageCompoenent/NavbarSignup";
 
@@ -25,6 +26,7 @@ return(
              <LeftSidePage />
             
         </div>
+        <BaseFooter />
     </div>
 )
 }

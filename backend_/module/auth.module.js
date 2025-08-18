@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-export const UserSchema = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
     {
         name:{
             type: String,
@@ -42,7 +42,7 @@ UserSchema.pre("save",async function ( next ){
 });
 
 // to check if the passowrd matches the credentials 
-UserSchema.methods.comparePassword = async function( password) {
+UserSchema.methods.comparePassword = async function( password ) {
     return bcrypt.compare(password, this.password); 
 };
 

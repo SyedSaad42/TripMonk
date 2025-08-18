@@ -8,12 +8,16 @@ import { SearchProvider } from "./context/SearchContext.jsx";
 import { TripCart } from "./pages/TripCart.jsx";
 import FlightProvider, { FlightContext } from "./context/FlightContext.jsx";
 import { AirportProivder } from "./context/AirportContext.jsx";
-
+import {HeroUIProvider, Input} from "@heroui/react";
+import { HotelProvider } from "./context/HotelsContext.jsx";
+import { TripCartProvider } from "./context/TripCartContext.jsx";
 function App() {
 
   return (
 
     <>
+    <HeroUIProvider>
+      <TripCartProvider>
     <AirportProivder>
           <SearchProvider>
     <FlightProvider>
@@ -32,8 +36,8 @@ function App() {
   {/* SignUp Page Route */}
   <Route path="/signup" element={<SignUpPage />} />
   <Route path="/login" element={<LoginPage />} />
-  <Route path="/search" element={<FlightPage />} />
-  <Route path="/tripCart" element={<TripCart />} />
+  <Route path="/search" element={   <HotelProvider><FlightPage /></HotelProvider>} />
+  <Route path="/tripcart" element={<TripCart />} />
 </Routes>
 
 <Toaster/>
@@ -41,6 +45,8 @@ function App() {
 </FlightProvider>
 </SearchProvider>
 </AirportProivder>
+</TripCartProvider>
+</HeroUIProvider>
     </>
 
 

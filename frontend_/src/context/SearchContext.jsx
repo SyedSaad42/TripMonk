@@ -3,28 +3,47 @@ import React, { createContext, useState } from "react";
 export const SearchContext = createContext();
 
 export const SearchProvider = ({ children }) => {
-  const today = new Date().toISOString().slice(0, 10);
+ const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
 
-  const [depature, setDepature] = useState("");
+  const getReturnDate = () => {
+    const returnDate = new Date(today);
+    returnDate.setDate(returnDate.getDate() + 8);
+    return returnDate.toISOString().slice(0, 10);
+  };
+
+  const [departure, setDeparture] = useState("");
   const [arrival, setArrival] = useState("");
-  const [depature_date, setDepature_date] = useState(today);
-  const [return_date, setReturn_date] = useState(today);
+  const [departure_date, setDeparture_date] = useState(today);
+  const [return_date, setReturn_date] = useState(getReturnDate);
   const [people, setPeople] = useState(0);
-
+ const [tripType, setTripType] = useState(2);
+ const [headCount,setHeadCount] = useState(0);
+ const [departureDisplay,setDepartureDisplay] = useState("");
+ const [arrivalDisplay,setArrivalDisplay] = useState("");
+ const [airlineLogo, setairlineLogo] = useState("");
   return (
     <SearchContext.Provider
       value={{
-        depature,
-        setDepature,
+        departure,
+        setDeparture,
         arrival,
         setArrival,
-        depature_date,
+        departure_date,
         return_date,
         setReturn_date,
-        setDepature_date,
-        people,
-        setPeople,
+        setDeparture_date,
         today,
+        tripType,
+        setTripType,
+        headCount,
+        setHeadCount,
+        departureDisplay,
+        setDepartureDisplay,
+        arrivalDisplay,
+        setArrivalDisplay,
+        airlineLogo,
+        setairlineLogo
       }}
     >
       {children}
